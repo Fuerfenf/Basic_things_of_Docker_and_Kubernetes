@@ -1,0 +1,44 @@
+-> Pod:
+    -> run pod:
+        -> kubectl run { pod name } --generator=run-pod/v1 --image=httpd:latest --port=80
+    -> remove pod:
+        ->  kubectl delete pods { pod name }
+    -> get all info about pod
+        -> kubectl desccribe pods { pod name }
+    -> sent command to pod:
+        -> kubectl exec { pod name } date
+    -> go to pod:
+        -> kubectl exec -it { pod name } sh
+    -> show pod logs:
+        -> kubectl logs { pod name }
+    -> forward pod:
+        -> kubectl port-forward { pod name } { port }: { container port }
+    -> show more info about pod:
+        -> kubectl describe pods { pod name }
+
+-> manifest file .yaml:
+    -> base example:
+        ->  apiVersion: v1
+            kind: Pod
+            metadata:
+                name: { app name }
+                labels:
+                    env: prod
+                    app: main
+                    tier: frontend
+                    owner: { owner name }
+            spec:
+                containers:
+                    - name: { name container example: container-web }
+                      image: { nessesary image }:{ version }                       ( example: image: nginx:latest )
+                      ports:
+                        - containerPort: { container port example: 80}
+
+                    - name: { name container example: container-api }
+                      image: { nessesary image }:{ version }                       ( example: image: tomcat:8.5.38 )
+                      ports:
+                        - containerPort: { container port example: 8080 }
+    -> to apply manifest :
+        -> kubectl apply -f filename.yaml
+    -> to delete when changing ports or other:
+        -> kubectl delete -f filename.yaml

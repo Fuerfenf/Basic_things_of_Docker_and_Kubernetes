@@ -1,0 +1,32 @@
+# inter image version
+    # FROM {image name}:{version}
+
+# set running commands
+    # create work dir (start command mkdir)
+        # RUN {command + flags} {path + folder_name}  example next line:
+
+# python requirements install
+    # RUN pip install -r {path to}/requirements.txt
+
+# change directory to worckdir
+    # WORKDIR {path to work catalog} example:
+
+# copy all data to container
+    # COPY {from path} {to path} example from our host to container:
+
+# forward ports
+    # EXPOSE {nuber of bort}
+
+# set time zone
+    # ENV TZ {Region}
+        -> example for Moscow: ENV TZ Europe/Moscow (way for static all containers)
+
+# changing rule for file to made it running
+    # RUN chmod a+x ./{file_name.sh}
+
+# start with shell. run when docker run or docker start
+    # CMD [params]
+        -> example: CMD ["python", "app.py"]
+# start without shell
+    # ENTRYPOINT [params]
+        -> example: ENTRYPOINT ["python", "app.py"]

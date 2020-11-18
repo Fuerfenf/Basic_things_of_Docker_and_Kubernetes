@@ -1,0 +1,31 @@
+version: "3.8"
+
+volumes:
+  mongodb_volume:
+
+services:
+  statistic:
+    build: statistic_chech
+    restart: always
+    environment:
+      - TZ-Europe/Moskow
+      - DAYS_STATISTICS_SEND_TIME=09:00
+      - WEEK_STATISTICS_SEND_TIME=22:00
+      - MONGO_DB_ADDR=mongodb
+      - MONGO_DB_PORT=27017
+      - RESPONSE_DELAY=120
+      - LANGUAGE=RU
+  database:
+    build: web
+    restart: always
+    ports:
+    - 8080:8080
+    environment:
+      - TZ-Europe/Moskow
+      - MONGO_DB_ADDR=mongodb
+      - MONGO_DB_PORT=27017
+  mongodb:
+    image: mongo:latest
+    volumes:
+    - mongodb_volume:/data/db
+    restart: always

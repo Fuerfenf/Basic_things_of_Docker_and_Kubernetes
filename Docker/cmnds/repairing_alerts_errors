@@ -1,0 +1,8 @@
+-> for repair this alert: Cannot connect to the Docker daemon at unix:///var/run/docker.sock. Is the docker daemon running?
+    ->$ systemctl start docker
+    -> Arch Linux (https://linuxhint.com/docker_arch_linux/):
+        1 -> $ sudo pacman -S docker
+        2 -> $ will start Docker daemon at every boot
+            2.1 -> $ sudo systemctl start docker.service
+            2.2 -> $ sudo systemctl enable docker.service
+

@@ -1,0 +1,123 @@
+-> show running deployments
+    -> kubectl get deployments
+-> create and run deployments
+    -> kubectl create deployment { name } --image { docker image : version }
+-> show more info about deployment:
+    -> kubectl describe deployment { deployment name }
+-> show history of deploy:
+    -> kubectl rollout history deployment/{ deploy name }
+-> show deploy status:
+    -> kubectl rollout status deployment/{ deploy name }
+-> for update deploy:
+    -> first take from deploy describe name of deploy and do next:
+        -> kubectl set image deployment/{ deploy name } { container name }={ docker image from dockHub } --record
+-> rollback version of deploy:
+    -> kubectl rollout undo deployment/{ deploy name } --to-revision={ number of version }
+
+-> scaling ( run replication deployment ):
+    -> scaling:
+        -> kubectl scale deployment { deployment name } --replicas { quantity }
+
+    -> autiscaling
+        -> kubectl autoscale deployment { deployment name } --min={ quantity } --max={ quantity } --cpu-percent=80
+
+        -> show autoscaling deployments (hpa):
+            -> kubectl get hpa
+    -> show replicates:
+        -> kubectl get rs
+
+
+-> manifest file .yaml:
+    -> for run manifest:
+        -> kubectl apply -f { manifest file name }.yaml
+    -> for kill manifest run:
+        -> kubectl delete -f { manifest file name }.yaml
+
+    -> base minimal example:
+        ->  apiVersion: app/v1
+            kind: Deployment
+            metadata:
+                name: { deploy name }
+                labels:
+                    app: { label name }
+            spec:
+                selector:
+                    matchlabels:
+                        project: { project name }
+                    template:
+                        metadata:
+                            labels:
+                                project: ( for pod name same as in matchlabels )
+                        spec:
+                            containers:
+                                - name: { name }
+                                  image: { image name from dockerhub }
+                                  ports:
+                                    - containerPort: {port}
+
+    -> example for replicas:
+        ->  apiVersion: app/v1
+            kind: Deployment
+            metadata:
+                name: { deploy name }
+                labels:
+                    app: { label name }
+            spec:
+            replicas: { quantity }
+                selector:
+                    matchlabels:
+                        project: { project name }
+                    template:
+                        metadata:
+                            labels:
+                                project: ( for pod name same as in matchlabels )
+                        spec:
+                            containers:
+                                - name: { name }
+                                  image: { image name from dockerhub }
+                                  ports:
+                                    - containerPort: {port}
+
+     -> example for autoscaling replicas:
+        ->  apiVersion: app/v1
+            kind: Deployment
+            metadata:
+                name: { deploy name marker ###}
+                labels:
+                    app: { label name }
+            spec:
+            replicas: { quantity }
+                selector:
+                    matchlabels:
+                        project: { project name }
+                    template:
+                        metadata:
+                            labels:
+                                project: ( for pod name same as in matchlabels )
+                        spec:
+                            containers:
+                                - name: { name }
+                                  image: { image name from dockerhub }
+                                  ports:
+                                    - containerPort: {port}
+            ---
+            apiVersion: autoscaling/v2beta1
+            kind: HorizontalPodAutoscaler
+            metadata:
+                name: { name }
+                spec:
+                    scaleTargetRef:
+                        aoiVersion: apps/v2betav1
+                        kind: Deployment
+                        nameT: { name same as in metadata name with marker ###}
+                    minReplicas: { quantity }
+                    maxReplicas: { quantity }
+                    metrics:
+                    - type: Resource
+                      resource:
+                        name: cpu
+                        targetAverageUtilization: { quantity }
+                    - type: Resource
+                      resource:
+                        name: memory
+                        targetAverageUtilization: { quantity }

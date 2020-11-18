@@ -1,0 +1,49 @@
+-> for get image:
+        ->$ docker pull {image name}
+
+-> build:
+    -> docker from docker file : $ docker build -t {contaner name} {directory}
+
+-> run:
+    -> docker container: $ docker run {conteiner name}
+    -> container with name to conteiners list: $ docker run --name {container name}
+    -> fone container : $ docker run --name {process container name} -d {container name}
+    -> container with ports add docker file and run command as:
+               $ sudo docker run --rm -p {serv}:{client} -e {timezone} {conteiner name}
+               -> example: $ sudo docker run --rm -p 8080:8080 -e TZ=Europe/Moskow website
+    -> add/mount params with file absolute path (absolute path in host and absolute path in container) used for changing and save data in container:
+               -> docker run --rm -p {serv}:{client} -e {timezone} -v {host path}:{container path+/folder} {container name}
+               -> example: $ sudo docker run --rm -p 8080:8080 -e TZ=Europe/Moskow -v /home/egor/PycharmProjects/docker_start/web-hello-world/resources/:/usr/src/app/resources website
+    -> add conteiner from docker repository: $ sudo docker run --rm -d -p {image}
+               -> example: $ sudo docker run --rm -d -p 27017:27017 mongo
+    -> run with auto del conteiner: $ dcoker run --rm {container name}
+    -> run with auto set ports and package from docker hub
+                -> sudo docker run --rm -d -p {serv}:{client} {package mongo}
+                    -> example for mongo: $ sudo docker run --rm -d -p 27017:27017 mongo
+
+-> volumes:
+     (alternative way to dinamic changes and save data from container)
+    -> see:
+        -> $ docker volume ls
+    -> create:
+        -> $ docker volume create {volume name}
+    -> run:
+        docker run --rm --name {name container} -p {serv}:{client}  -v {volume name}:{absolute path} {image name}
+
+-> see:
+    -> containers:
+        -> all containers: $ docker ps -a
+        -> only id containers : $ docker ps -qa
+
+    -> images:
+        -> $ docker images
+
+-> stop:
+        ->container: $ docker stop {container name}
+
+-> delete:
+    -> container id: $ docker rm {conteiner id}
+    -> contaners: $ docker rm $(docker ps -qa)
+    -> image : $ docker rmi {image name}
+    -> images: $ docker rmi $(docker images -q)
+    -> delete with force: $ docker rmi {image name} --force

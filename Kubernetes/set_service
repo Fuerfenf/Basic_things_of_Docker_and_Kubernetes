@@ -1,0 +1,125 @@
+-> main 4 services types:
+    -> Cluster Ip
+        ( default, app py ip in kuber cluster only )
+    -> NodePort
+        ( app on port on all kuber worker nodes )
+    -> ExternalName
+        ( DNS CNAME Record )
+    -> LoadBalancer
+        ( only in cloud as AWS, GCP, Azure )
+
+-> first create deployment and if need replicate them
+    -> kuberctl create deployment { deploy name } --image { image from dockerhub }
+    -> kubectl scale deployment { deployment name } --replicas { quantity }
+
+-> create service:
+    -> show run services:
+        -> kubectl get svc
+    -> show info about services:
+        -> kubectl describe nodes
+        -> grep nodes ip
+            kubectl describe nodes | grep ExternalIP
+
+    -> method - Cluster IP :
+        -> kubectl expose deployment { deploy name } --type=ClusterIP --port{ port number example:80}
+    -> method - NodePort :
+        -> kubectl expose deployment { deploy name } --type=NodePort --port{ port number example:80}
+    -> method - LoadBalancer :
+        -> kubectl expose deployment { deploy name } --type=LoadBalancer --port{ port number example:80}
+
+    -> how to delete service:
+        -> kuberctl delete service { deploy name }
+
+-> manifest file .yaml:
+    -> for run manifest:
+        -> kubectl apply -f { manifest file name }.yaml
+    -> for kill manifest run:
+        -> kubectl delete -f { manifest file name }.yaml
+
+    -> single example:
+        ->  apiVersion: app/v1                  # deploy part
+            kind: Deployment
+            metadata:
+                name: { deploy name }
+                labels:
+                    app: { label name }
+            spec:
+                selector:
+                    matchlabels:
+                        project: { project name }
+                    template:
+                        metadata:
+                            labels:
+                                project: ( for pod name same as in matchlabels )   # Service will look for those PODS
+                        spec:
+                            containers:
+                                - name: { name }
+                                  image: { image name from dockerhub }
+                                  ports:
+                                    - containerPort: {port}
+             ---                                #  service part
+            apiVersion: v1
+            kind: Service
+            metadata:
+                name: { service name }
+                labels:
+                    env: prod
+                    owner: { name }
+            spec:
+                selector:
+                       project: ( for pod name same as in matchlabels )   # Selecting PODS with those labels
+                ports:
+                    - name: { app name }
+                      protocol : TCP
+                      port: 80          # port on load balancer
+                      targetPort: 80    # port on POD
+                type: { select type: LoadBalancer/NodePort/Cluster Ip }
+
+
+    -> multi example:
+                    ->  apiVersion: app/v1                  # deploy part
+            kind: Deployment
+            metadata:
+                name: { deploy name }
+                labels:
+                    app: { label name }
+            spec:
+                replicas: 2
+                selector:
+                    matchlabels:
+                        project: { project name }
+                    template:
+                        metadata:
+                            labels:
+                                project: ( for pod name same as in matchlabels )   # Service will look for those PODS
+                        spec:
+                            containers:
+                                - name: { name }
+                                  image: { image name from dockerhub }
+                                  ports:
+                                    - containerPort: {port example 80}
+                                - name: { name }
+                                  image: { image name from dockerhub }
+                                  ports:
+                                    - containerPort: {port example 8080}
+             ---                                #  service part
+            apiVersion: v1
+            kind: Service
+            metadata:
+                name: { service name }
+                labels:
+                    env: prod
+                    owner: { name }
+            spec:
+                selector:
+                       project: ( for pod name same as in matchlabels )   # Selecting PODS with those labels
+                ports:
+                    - name: { app name }
+                      protocol : TCP
+                      port: 80          # port on load balancer
+                      targetPort: 80    # port on POD
+                    - name: { app name }
+                      protocol : TCP
+                      port: 8888          # port on load balancer
+                      targetPort: 8080    # port on POD
+                type: { select type: LoadBalancer/NodePort/Cluster Ip }
