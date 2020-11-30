@@ -20,6 +20,9 @@
     -> run with auto set ports and package from docker hub
                 -> sudo docker run --rm -d -p {serv}:{client} {package mongo}
                     -> example for mongo: $ sudo docker run --rm -d -p 27017:27017 mongo
+    -> docker run -d -P --name static-site { container}
+        -> (-d detach from term, -P open all ports )
+
 
 -> volumes:
      (alternative way to dinamic changes and save data from container)
@@ -37,6 +40,9 @@
 
     -> images:
         -> $ docker images
+
+    -> container ports:
+        -> docker port {name or id of container}
 
 -> stop:
         ->container: $ docker stop {container name}
