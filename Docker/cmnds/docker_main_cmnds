@@ -47,3 +47,4 @@
     -> image : $ docker rmi {image name}
     -> images: $ docker rmi $(docker images -q)
     -> delete with force: $ docker rmi {image name} --force
+    -> delete by status: docker rm $(docker ps -a -q -f status=exited)
